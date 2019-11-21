@@ -1,32 +1,14 @@
-const { getReleaseUrl, getFilesUrl } = require('./helpers')
+const { generateReleaseUrl } = require('./helpers')
 const { post } = require('./sentryClient')
 const ClientError = require('./clientError')
 
 function service(config) {
-  const { version, organization, project, token, hostname } = config
+  const { organization, project, token, hostname } = config
 
-  function createRelease() {
-    return new Promise((resolve, reject) => {
-      post(hostname, getReleaseUrl(organization, project))
-        .setToken(token)
-        .setBody({ version })
-        .end((error, response) => {
-          if (error) {
-            if (error instanceof ClientError) {
-              const responseError = new Error()
-              responseError.data = error.response.body
-              return reject(responseError)
-            }
-            return reject(error)
-          }
-          const { body } = response
-          return resolve(body)
-        })
-    })
-  }
   function uploadFile(file) {
+    console.log('Release Upload URL -->', generateReleaseUrl(organization, project));
     return new Promise((resolve, reject) => {
-      post(hostname, getFilesUrl(organization, project, version))
+      post(hostname, generateReleaseUrl(organization, project))
         .setToken(token)
         .attachFile(file)
         .end((error, response) => {
@@ -46,7 +28,6 @@ function service(config) {
     })
   }
   return {
-    createRelease,
     uploadFile
   }
 }

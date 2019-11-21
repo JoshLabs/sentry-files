@@ -6,7 +6,6 @@ function getField(name, displayName) {
 
 function validateConfig(config) {
   const requiredConfigFields = [
-    getField('version'),
     getField('organization'),
     getField('project'),
     getField('token'),

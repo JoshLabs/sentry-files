@@ -15,7 +15,7 @@ function service(config) {
           if (error) {
             if (error instanceof ClientError) {
               const responseError = new Error()
-              responseError.data = Object.assign({}, error.response.body, {
+              responseError.data = Object.assign({}, error.response, {
                 file
               })
               return reject(responseError)
